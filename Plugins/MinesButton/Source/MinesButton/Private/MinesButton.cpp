@@ -47,37 +47,46 @@ void FMinesButtonModule::ShutdownModule()
 
 void FMinesButtonModule::PluginButtonClicked()
 {
-	if (!ChatWidget.IsValid())  // Prevent multiple windows
+	UE_LOG(LogTemp, Warning, TEXT("Plugin Button Clicked!"));
+
+	// ✅ Check if the chat widget is valid
+	if (!ChatWidget.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Creating a new chat window..."));
+		UE_LOG(LogTemp, Warning, TEXT("Creating a new Minesweeper AI Chat window..."));
 
-		ChatWidget = SNew(SChatWidget).OwningHUD(nullptr);
+		// ✅ Create a new Minesweeper chat widget
+		ChatWidget = SNew(SChatWidget);// .OwningHUD(nullptr);
 
+		// ✅ Create a new window for the chat interface
 		TSharedRef<SWindow> ChatWindow = SNew(SWindow)
-			.Title(FText::FromString("Chat Window"))
-			.ClientSize(FVector2D(500, 400))
-			/*.SupportsMaximize(false)
-			.SupportsMinimize(false)*/
+			.Title(FText::FromString("Minesweeper AI Assistant"))
+			.ClientSize(FVector2D(600, 450))  // Slightly larger for AI-generated grids
 			[
 				ChatWidget.ToSharedRef()
 			];
 
-		ChatWidgetContainer = ChatWindow;  // Store the reference
-		FSlateApplication::Get().AddWindow(ChatWindow);
+		ChatWidgetContainer = ChatWindow;// Store a reference to the window
+				
+		FSlateApplication::Get().AddWindow(ChatWindow);// Add the window to Unreal's UI
+
+		UE_LOG(LogTemp, Warning, TEXT("Chat window successfully created."));
 	}
 	else
 	{
-		// Correctly handle TWeakPtr by converting it to TSharedPtr
+		// ✅ Check if the chat window reference is still valid
 		if (TSharedPtr<SWindow> WindowPtr = ChatWidgetContainer.Pin())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Chat window already exists. Bringing to front."));
-			WindowPtr->BringToFront();  // ✅ Now it's a valid TSharedPtr
+			UE_LOG(LogTemp, Warning, TEXT("Chat window already exists. Bringing it to front."));
+			WindowPtr->BringToFront();
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("ChatWidgetContainer was unexpectedly invalid. Resetting..."));
+
+			// ✅ Reset widget and try again
 			ChatWidget.Reset();
-			PluginButtonClicked();  // Try again
+			ChatWidgetContainer.Reset();
+			PluginButtonClicked(); // 🔁 Retry opening the chat window
 		}
 	}
 }

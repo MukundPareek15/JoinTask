@@ -25,7 +25,7 @@ public class MinesButton : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core", "Json", "JsonUtilities", "HTTP",
+				"Core", "Json", "JsonUtilities", "HTTP", "InputCore",
                 
 				// ... add other public dependencies that you statically link with here ...
 			}

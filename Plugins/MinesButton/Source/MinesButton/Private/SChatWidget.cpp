@@ -1,48 +1,48 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "SChatWidget.h"
 
-
-#include "SChatWidget.h"
-
-#define LOCTEXT_NAMESPACE "SChatWidget"
+#include "SlateBasics.h"
+#include "SlateExtras.h"
+#include "Widgets/Input/SEditableTextBox.h"
+#include "Widgets/Text/STextBlock.h"
+#include "Widgets/Input/SButton.h"
+//#include "Widgets/Layout/SVerticalBox.h"
+//#include "Widgets/Layout/SHorizontalBox.h"
+#include "HttpModule.h"
 
 void SChatWidget::Construct(const FArguments& InArgs)
 {
-	const FMargin ContentPadding = FMargin(500.0f, 300.0f);
+	AIRequest = NewObject<UMinesweeperAIRequest>();
+	AIRequest->OnResponseReceived.BindRaw(this, &SChatWidget::HandleAIResponse);
+
+	SAssignNew(GridBox, SVerticalBox);
 
 	ChildSlot
-		/*[
-			SNew(SOverlay)
-				+ SOverlay::Slot()
-				.HAlign(HAlign_Fill)
-				.VAlign(VAlign_Fill)
-				[
-					SNew(SImage)
-						.ColorAndOpacity(FColor::Black)
-				]
-				+SOverlay::Slot()
-				.HAlign(HAlign_Fill)
-				.VAlign(VAlign_Fill)
-				.Padding(ContentPadding)
-				[
-					SNew(SVerticalBox)
-						+ SVerticalBox::Slot()
-						[
-							SNew(STextBlock)
-								.Text(FText::FromString("Chat Box"))
-						]
-				]
-		];*/
 		[
 			SNew(SVerticalBox)
-				+ SVerticalBox::Slot()
-				.AutoHeight()
+				+ SVerticalBox::Slot().AutoHeight()
 				[
-					SNew(STextBlock).Text(FText::FromString("Chat Box"))
+					SNew(STextBlock).Text(FText::FromString("Ask AI for a Minesweeper Grid"))
 				]
-				+ SVerticalBox::Slot()
+				+ SVerticalBox::Slot().AutoHeight()
 				[
-					SNew(SEditableTextBox)
+					SAssignNew(InputTextBox, SEditableTextBox)
+						.HintText(FText::FromString("Enter your request..."))
 						.OnTextCommitted(this, &SChatWidget::OnChatSubmitted)
+				]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					SAssignNew(ResponseText, STextBlock).Text(FText::FromString("AI Response will appear here"))
+				]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					SAssignNew(PlayButton, SButton)
+						.Text(FText::FromString("Play"))
+						.OnClicked(this, &SChatWidget::GenerateMinesweeperBoard)
+						.IsEnabled(false)
+				]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+					GridBox.ToSharedRef()
 				]
 		];
 }
@@ -52,85 +52,102 @@ void SChatWidget::OnChatSubmitted(const FText& Text, ETextCommit::Type CommitTyp
 	if (CommitType == ETextCommit::OnEnter)
 	{
 		FString UserInput = Text.ToString();
-		UE_LOG(LogTemp, Log, TEXT("User Input: %s"), *UserInput);
-
-		// Send input to AI
-		SendAIRequest(UserInput);
+		AIRequest->SendAIRequest(UserInput);
 	}
 }
 
-void SChatWidget::SendAIRequest(FString Query)
+void SChatWidget::HandleAIResponse(FString AIResponse)
 {
-	// Get HTTP module
-	FHttpModule* Http = &FHttpModule::Get();
-	if (!Http) return;
-
-	// Create HTTP request
-	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = Http->CreateRequest();
-	Request->SetURL("https://api.openai.com/v1/chat/completions"); // Change to your API endpoint
-	Request->SetVerb("POST");
-	Request->SetHeader("Content-Type", "application/json");
-	Request->SetHeader("Authorization", "Bearer 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"); // API key
-
-	// Create JSON request body
-	FString RequestBody = FString::Printf(TEXT(R"({"model": "gpt-4o-mini", "prompt": "%s", "max_tokens": 100})"), *Query);
-	Request->SetContentAsString(RequestBody);
-
-	// Bind response function
-	Request->OnProcessRequestComplete().BindRaw(this, &SChatWidget::OnAIResponse);
-	Request->ProcessRequest();
-}
-
-void SChatWidget::OnAIResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-{
-	if (bWasSuccessful && Response.IsValid())
-	{
-		FString AIResponse = Response->GetContentAsString();
-		UE_LOG(LogTemp, Log, TEXT("AI Response: %s"), *AIResponse);
-
-		// Process the AI response into a Minesweeper grid
-		ProcessAIGridResponse(AIResponse);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to get AI response!"));
-	}
-}
-
-void SChatWidget::ProcessAIGridResponse(FString AIResponse)
-{
+	UE_LOG(LogTemp, Log, TEXT("Raw AI Response:\n%s"), *AIResponse);
+	// Convert JSON response to structured data
 	TSharedPtr<FJsonObject> JsonObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(AIResponse);
 
 	if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
 	{
-		FString GridString;
-		if (JsonObject->TryGetStringField("choices", GridString))
+		// Extract message content from AI response
+		TArray<TSharedPtr<FJsonValue>> Choices = JsonObject->GetArrayField("choices");
+		if (Choices.Num() > 0 && Choices[0]->AsObject()->HasField("message"))
 		{
-			UE_LOG(LogTemp, Log, TEXT("AI Grid Response: %s"), *GridString);
+			TSharedPtr<FJsonObject> MessageObject = Choices[0]->AsObject()->GetObjectField("message");
 
-			// Convert AI text to actual grid
-			// Example AI Response: "0 1 0\n1 X 1\n0 1 0"
-			TArray<TArray<int32>> Grid;
-			TArray<FString> Rows;
-			GridString.ParseIntoArray(Rows, TEXT("\n"));
-
-			for (FString& Row : Rows)
+			if (MessageObject->HasField("content"))
 			{
-				TArray<FString> Cells;
-				Row.ParseIntoArray(Cells, TEXT(" "));
-
-				TArray<int32> GridRow;
-				for (FString& Cell : Cells)
+				FString ResponseTextStr = MessageObject->GetStringField("content");
+				// ✅ Extract Grid Data Only
+				int32 GridStartIndex = ResponseTextStr.Find(TEXT("\n"));
+				if (GridStartIndex != INDEX_NONE)
 				{
-					GridRow.Add(Cell == "X" ? -1 : FCString::Atoi(*Cell)); // -1 means mine
+					LastGeneratedGrid = ResponseTextStr.Mid(GridStartIndex).TrimStartAndEnd();
 				}
-				Grid.Add(GridRow);
-			}
+				else
+				{
+					LastGeneratedGrid = ResponseTextStr; // Fallback if no newline
+				}
 
-			// TODO: Use this `Grid` in your Minesweeper logic!
+				// ✅ Remove extra AI explanations
+				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("In this grid, \"X\" represents the bomb."), TEXT(""), ESearchCase::IgnoreCase);
+				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("The other cells are empty."), TEXT(""), ESearchCase::IgnoreCase);
+
+				ResponseText->SetText(FText::FromString(LastGeneratedGrid));//(ResponseTextStr));// ✅ Update response text in UI
+				PlayButton->SetEnabled(true);
+			}
+			
 		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Invalid AI response format: Missing 'message' or 'content'"));
+			ResponseText->SetText(FText::FromString("Error: Invalid AI response format"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to parse AI response: %s"), *AIResponse);
+		ResponseText->SetText(FText::FromString("Error: Invalid AI response"));
 	}
 }
 
-#undef LOCTEXT_NAMESPACE
+FReply SChatWidget::GenerateMinesweeperBoard()
+{
+	UE_LOG(LogTemp, Log, TEXT("Generating Minesweeper Board: \n%s"), *LastGeneratedGrid);
+	
+
+	// Convert AI text into a 2D Minesweeper grid, Split AI response into Rows
+	TArray<FString> Rows;
+	LastGeneratedGrid.ParseIntoArray(Rows, TEXT("\n"), true);
+
+	// Clear old grid (if any)
+	GridBox->ClearChildren();
+
+	for (const FString& Row : Rows)
+	{
+		if (Row.IsEmpty()) continue;
+		TSharedPtr<SHorizontalBox> RowBox;// = SNew(SHorizontalBox);
+		SAssignNew(RowBox, SHorizontalBox);
+
+		TArray<FString> Cells;
+		Row.ParseIntoArray(Cells, TEXT(" "), true);// ✅ Split by space (ignores multiple spaces)
+
+		for (const FString& Cell : Cells)
+		{
+			//int32 Value = (Cell == "X") ? -1 : FCString::Atoi(*Cell);
+
+			FString DisplayText = (Cell == "X") ? "💣" : Cell; // ✅ Bomb symbol
+
+			RowBox->AddSlot()
+				.AutoWidth()
+				[
+					SNew(SButton)
+						.Text(FText::FromString(DisplayText/*(Value == -1 ? "X" : FString::FromInt(Value)*/))
+				];
+		}
+
+		GridBox->AddSlot()
+			.AutoHeight()
+			[
+				RowBox.ToSharedRef()
+			];
+	}
+
+	return FReply::Handled();
+}

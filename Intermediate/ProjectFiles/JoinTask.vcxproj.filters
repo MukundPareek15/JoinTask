@@ -12,7 +12,10 @@
       <Filter>Source</Filter>
     </None>
     <None Include="..\..\.editorconfig" />
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
+    <None Include="..\..\LICENSE.txt" />
     <None Include="..\..\shadertoolsconfig.json" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
@@ -56,6 +59,9 @@
     <ClCompile Include="..\..\Plugins\MinesButton\Source\MinesButton\Private\MinesButtonStyle.cpp">
       <Filter>Plugins\MinesButton\Source\MinesButton\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\MinesButton\Source\MinesButton\Private\MinesweeperAIRequest.cpp">
+      <Filter>Plugins\MinesButton\Source\MinesButton\Private</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Plugins\MinesButton\Source\MinesButton\Private\SChatWidget.cpp">
       <Filter>Plugins\MinesButton\Source\MinesButton\Private</Filter>
     </ClCompile>
@@ -72,6 +78,9 @@
       <Filter>Plugins\MinesButton\Source\MinesButton\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\MinesButton\Source\MinesButton\Public\MinesButtonStyle.h">
+      <Filter>Plugins\MinesButton\Source\MinesButton\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\MinesButton\Source\MinesButton\Public\MinesweeperAIRequest.h">
       <Filter>Plugins\MinesButton\Source\MinesButton\Public</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Plugins\MinesButton\Source\MinesButton\Public\SChatWidget.h">

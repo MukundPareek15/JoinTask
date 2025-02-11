@@ -17,13 +17,13 @@ void EmptyLinkFunctionForGeneratedCodeMinesButton_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000040,
-				0xC9521E75,
-				0xF9CFFB90,
+				0x2D4394D9,
+				0x1D6C8CD3,
 				METADATA_PARAMS(0, nullptr)
 			};
 			UECodeGen_Private::ConstructUPackage(Z_Registration_Info_UPackage__Script_MinesButton.OuterSingleton, PackageParams);
 		}
 		return Z_Registration_Info_UPackage__Script_MinesButton.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_MinesButton(Z_Construct_UPackage__Script_MinesButton, TEXT("/Script/MinesButton"), Z_Registration_Info_UPackage__Script_MinesButton, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0xC9521E75, 0xF9CFFB90));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_MinesButton(Z_Construct_UPackage__Script_MinesButton, TEXT("/Script/MinesButton"), Z_Registration_Info_UPackage__Script_MinesButton, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x2D4394D9, 0x1D6C8CD3));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

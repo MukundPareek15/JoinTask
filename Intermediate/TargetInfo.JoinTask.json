@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "JoinTask",
+			"Path": "..\\Source\\JoinTask.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "JoinTaskEditor",
+			"Path": "..\\Source\\JoinTaskEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
