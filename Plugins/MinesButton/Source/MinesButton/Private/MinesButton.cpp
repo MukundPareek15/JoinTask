@@ -23,10 +23,13 @@ void FMinesButtonModule::StartupModule()
 	
 	PluginCommands = MakeShareable(new FUICommandList);
 
-	PluginCommands->MapAction(
-		FMinesButtonCommands::Get().PluginAction,
-		FExecuteAction::CreateRaw(this, &FMinesButtonModule::PluginButtonClicked),
-		FCanExecuteAction());
+	if (PluginCommands.IsValid())
+	{
+		PluginCommands->MapAction(
+			FMinesButtonCommands::Get().PluginAction,
+			FExecuteAction::CreateRaw(this, &FMinesButtonModule::PluginButtonClicked),
+			FCanExecuteAction());
+	}
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FMinesButtonModule::RegisterMenus));
 }
@@ -55,7 +58,13 @@ void FMinesButtonModule::PluginButtonClicked()
 		UE_LOG(LogTemp, Warning, TEXT("Creating a new Minesweeper AI Chat window..."));
 
 		// ✅ Create a new Minesweeper chat widget
-		ChatWidget = SNew(SChatWidget);// .OwningHUD(nullptr);
+		SAssignNew(ChatWidget, SChatWidget);
+
+		if (!ChatWidget.IsValid())
+		{
+			UE_LOG(LogTemp, Error, TEXT("ChatWidget creation failed!"));
+			return;
+		}
 
 		// ✅ Create a new window for the chat interface
 		TSharedRef<SWindow> ChatWindow = SNew(SWindow)
@@ -65,16 +74,19 @@ void FMinesButtonModule::PluginButtonClicked()
 				ChatWidget.ToSharedRef()
 			];
 
-		ChatWidgetContainer = ChatWindow;// Store a reference to the window
-				
-		FSlateApplication::Get().AddWindow(ChatWindow);// Add the window to Unreal's UI
+		// ✅ Store a reference to the window
+		ChatWidgetContainer = ChatWindow;
+
+		// ✅ Add the window to Unreal's UI
+		FSlateApplication::Get().AddWindow(ChatWindow);
 
 		UE_LOG(LogTemp, Warning, TEXT("Chat window successfully created."));
 	}
 	else
 	{
 		// ✅ Check if the chat window reference is still valid
-		if (TSharedPtr<SWindow> WindowPtr = ChatWidgetContainer.Pin())
+		TSharedPtr<SWindow> WindowPtr = ChatWidgetContainer.Pin();
+		if (WindowPtr.IsValid())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Chat window already exists. Bringing it to front."));
 			WindowPtr->BringToFront();
@@ -86,11 +98,10 @@ void FMinesButtonModule::PluginButtonClicked()
 			// ✅ Reset widget and try again
 			ChatWidget.Reset();
 			ChatWidgetContainer.Reset();
-			PluginButtonClicked(); // 🔁 Retry opening the chat window
+			PluginButtonClicked();
 		}
 	}
 }
-
 
 
 void FMinesButtonModule::RegisterMenus()
