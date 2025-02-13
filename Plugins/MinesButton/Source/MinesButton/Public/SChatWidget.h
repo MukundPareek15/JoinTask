@@ -24,18 +24,6 @@ public:
 
 	void Construct(const FArguments& InArgs);
 
-	//void OnChatSubmitted(const FText& Text, ETextCommit::Type CommitType);
-
-	//TWeakObjectPtr<class AWindowHUD> OwningHUD;
-
-	//virtual bool SupportsKeyboardFocus() const override { return true; };
-
-	//void SendAIRequest(const FString& Query); // Sends a request to AI
-	//void OnAIResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful); // Handles AI response
-
-	/*void ProcessAIGridResponse(const FString& AIResponse);*/
-
-
 	FReply GenerateMinesweeperBoard();
 private:
 	TSharedPtr<class SEditableTextBox> InputTextBox;
