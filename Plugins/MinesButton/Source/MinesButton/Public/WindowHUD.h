@@ -7,7 +7,7 @@
 #include "WindowHUD.generated.h"
 
 /**
- * 
+ * A custom HUD class that integrates a Slate-based chat window into the game viewport.
  */
 UCLASS()
 class MINESBUTTON_API AWindowHUD : public AHUD
@@ -16,9 +16,13 @@ class MINESBUTTON_API AWindowHUD : public AHUD
 
 protected:
 
+	/** Reference to the Slate Chat Widget */
 	TSharedPtr<class SChatWidget> ChatWidget;
+
+	/** Holds a reference to the widget added to the viewport */
 	TWeakPtr<class SWidget> ChatWidgetContainer;
 
+	/** Called when the game starts */
 	virtual void BeginPlay() override;
 	
 };

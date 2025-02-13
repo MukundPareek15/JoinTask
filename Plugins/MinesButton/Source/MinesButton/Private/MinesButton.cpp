@@ -14,11 +14,9 @@ static const FName MinesButtonTabName("MinesButton");
 
 void FMinesButtonModule::StartupModule()
 {
-	// This code will execute after the module is loaded into memory;
-	
+	// Initialize UI styles and commands	
 	FMinesButtonStyle::Initialize();
 	FMinesButtonStyle::ReloadTextures();
-
 	FMinesButtonCommands::Register();
 	
 	PluginCommands = MakeShareable(new FUICommandList);
@@ -36,15 +34,10 @@ void FMinesButtonModule::StartupModule()
 
 void FMinesButtonModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
-
+	// Cleanup before shutdown
 	UToolMenus::UnRegisterStartupCallback(this);
-
 	UToolMenus::UnregisterOwner(this);
-
 	FMinesButtonStyle::Shutdown();
-
 	FMinesButtonCommands::Unregister();
 }
 
@@ -52,12 +45,10 @@ void FMinesButtonModule::PluginButtonClicked()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Plugin Button Clicked!"));
 
-	// ✅ Check if the chat widget is valid
+	// Check if the chat widget is valid, Create New one if not
 	if (!ChatWidget.IsValid())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Creating a new Minesweeper AI Chat window..."));
-
-		// ✅ Create a new Minesweeper chat widget
 		SAssignNew(ChatWidget, SChatWidget);
 
 		if (!ChatWidget.IsValid())
@@ -66,7 +57,7 @@ void FMinesButtonModule::PluginButtonClicked()
 			return;
 		}
 
-		// ✅ Create a new window for the chat interface
+		// Create a new window for the chat interface
 		TSharedRef<SWindow> ChatWindow = SNew(SWindow)
 			.Title(FText::FromString("Minesweeper AI Assistant"))
 			.ClientSize(FVector2D(600, 450))  // Slightly larger for AI-generated grids
@@ -74,17 +65,16 @@ void FMinesButtonModule::PluginButtonClicked()
 				ChatWidget.ToSharedRef()
 			];
 
-		// ✅ Store a reference to the window
+		// Store a reference to the window
 		ChatWidgetContainer = ChatWindow;
 
-		// ✅ Add the window to Unreal's UI
+		// Add the window to Unreal's UI
 		FSlateApplication::Get().AddWindow(ChatWindow);
-
 		UE_LOG(LogTemp, Warning, TEXT("Chat window successfully created."));
 	}
 	else
 	{
-		// ✅ Check if the chat window reference is still valid
+		// If the chat widget already exists, bring the window to the front
 		TSharedPtr<SWindow> WindowPtr = ChatWidgetContainer.Pin();
 		if (WindowPtr.IsValid())
 		{
@@ -95,7 +85,7 @@ void FMinesButtonModule::PluginButtonClicked()
 		{
 			UE_LOG(LogTemp, Error, TEXT("ChatWidgetContainer was unexpectedly invalid. Resetting..."));
 
-			// ✅ Reset widget and try again
+			// Reset widget and try again
 			ChatWidget.Reset();
 			ChatWidgetContainer.Reset();
 			PluginButtonClicked();
@@ -106,10 +96,9 @@ void FMinesButtonModule::PluginButtonClicked()
 
 void FMinesButtonModule::RegisterMenus()
 {
-	// Owner will be used for cleanup in call to UToolMenus::UnregisterOwner
 	FToolMenuOwnerScoped OwnerScoped(this);
 
-	{
+	{// Register a menu extension for the window menu, Add a menu entry under "Window" -> "Window Layout"
 		UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Window");
 		{
 			FToolMenuSection& Section = Menu->FindOrAddSection("WindowLayout");
@@ -117,7 +106,7 @@ void FMinesButtonModule::RegisterMenus()
 		}
 	}
 
-	{
+	{// Add a button to the "PlayToolBar"
 		UToolMenu* ToolbarMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
 		{
 			FToolMenuSection& Section = ToolbarMenu->FindOrAddSection("PluginTools");
@@ -127,7 +116,7 @@ void FMinesButtonModule::RegisterMenus()
 			}
 		}
 	}
-
+	// Store a reference to the HUD class
 	HUDClass = AWindowHUD::StaticClass();
 }
 

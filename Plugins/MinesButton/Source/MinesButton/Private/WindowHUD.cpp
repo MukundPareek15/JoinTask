@@ -12,8 +12,8 @@ void AWindowHUD::BeginPlay()
 
 	if (GEngine && GEngine->GameViewport)
 	{
-		ChatWidget = SNew(SChatWidget)
-			/*.OwningHUD(this)*/;
+		ChatWidget = SNew(SChatWidget);
+			
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SAssignNew(ChatWidgetContainer, SWeakWidget)
 			.PossiblyNullContent(ChatWidget.ToSharedRef())

@@ -38,8 +38,14 @@ void EmptyLinkFunctionForGeneratedCodeMinesweeperAIRequest() {}
 	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_UMinesweeperAIRequest_Statics::DependentSingletons) < 16);
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UMinesweeperAIRequest_Statics::Class_MetaDataParams[] = {
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "/**\n * Handles sending requests to the Mistral AI API and processing responses.\n */" },
+#endif
 		{ "IncludePath", "MinesweeperAIRequest.h" },
 		{ "ModuleRelativePath", "Public/MinesweeperAIRequest.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Handles sending requests to the Mistral AI API and processing responses." },
+#endif
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UMinesweeperAIRequest_Statics::StaticCppClassTypeInfo = {
@@ -80,9 +86,9 @@ void EmptyLinkFunctionForGeneratedCodeMinesweeperAIRequest() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_MinesweeperAIRequest_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UMinesweeperAIRequest, UMinesweeperAIRequest::StaticClass, TEXT("UMinesweeperAIRequest"), &Z_Registration_Info_UClass_UMinesweeperAIRequest, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMinesweeperAIRequest), 7837830U) },
+		{ Z_Construct_UClass_UMinesweeperAIRequest, UMinesweeperAIRequest::StaticClass, TEXT("UMinesweeperAIRequest"), &Z_Registration_Info_UClass_UMinesweeperAIRequest, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UMinesweeperAIRequest), 2282016878U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_MinesweeperAIRequest_h_3405886930(TEXT("/Script/MinesButton"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_MinesweeperAIRequest_h_1187875167(TEXT("/Script/MinesButton"),
 		Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_MinesweeperAIRequest_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_MinesweeperAIRequest_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

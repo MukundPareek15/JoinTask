@@ -113,5 +113,9 @@
     <ClInclude Include="..\..\Source\JoinTask\JoinTask.h">
       <Filter>Source\JoinTask</Filter>
     </ClInclude>
+    <None Include="config.ini" />
+    <None Include="Game.ini">
+      <Filter>Config</Filter>
+    </None>
   </ItemGroup>
 </Project>

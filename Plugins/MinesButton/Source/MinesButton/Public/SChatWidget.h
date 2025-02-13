@@ -10,7 +10,10 @@
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 #include "Async/AsyncWork.h"
- 
+
+/**
+ * Chat UI Widget that interacts with AI to generate Minesweeper grids.
+ */ 
 class MINESBUTTON_API SChatWidget : public SCompoundWidget
 {
 public:
@@ -24,18 +27,31 @@ public:
 
 	void Construct(const FArguments& InArgs);
 
+	/** Generates a Minesweeper board from the AI response */
 	FReply GenerateMinesweeperBoard();
 private:
+	/** Input text box for user queries */
 	TSharedPtr<class SEditableTextBox> InputTextBox;
+
+	/** Displays AI-generated text */
 	TSharedPtr<class STextBlock> ResponseText;
+
+	/** Button to play Minesweeper */
 	TSharedPtr<class SButton> PlayButton;
+
+	/** Container for the Minesweeper grid */
 	TSharedPtr<SVerticalBox> GridBox;
 
-
+	/** Handles sending requests to AI */
 	TObjectPtr<UMinesweeperAIRequest> AIRequest;
+
+	/** Stores the last generated Minesweeper grid */
 	FString LastGeneratedGrid;
 
+	/** Called when the user submits a chat query */
 	void OnChatSubmitted(const FText& Text, ETextCommit::Type CommitType);
+
+	/** Handles the response from AI */
 	void HandleAIResponse(FString AIResponse);
 	;
 	

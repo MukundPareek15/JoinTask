@@ -1,4 +1,4 @@
-#include "MinesweeperAIRequest.h"
+﻿#include "MinesweeperAIRequest.h"
 
 void UMinesweeperAIRequest::SendAIRequest(FString UserQuery)
 {

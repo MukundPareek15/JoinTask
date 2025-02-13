@@ -39,12 +39,15 @@ void EmptyLinkFunctionForGeneratedCodeWindowHUD() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AWindowHUD_Statics::Class_MetaDataParams[] = {
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/**\n * \n */" },
+		{ "Comment", "/**\n * A custom HUD class that integrates a Slate-based chat window into the game viewport.\n */" },
 #endif
 		{ "HideCategories", "Rendering Actor Input Replication" },
 		{ "IncludePath", "WindowHUD.h" },
 		{ "ModuleRelativePath", "Public/WindowHUD.h" },
 		{ "ShowCategories", "Input|MouseInput Input|TouchInput" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "A custom HUD class that integrates a Slate-based chat window into the game viewport." },
+#endif
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AWindowHUD_Statics::StaticCppClassTypeInfo = {
@@ -85,9 +88,9 @@ void EmptyLinkFunctionForGeneratedCodeWindowHUD() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_WindowHUD_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AWindowHUD, AWindowHUD::StaticClass, TEXT("AWindowHUD"), &Z_Registration_Info_UClass_AWindowHUD, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AWindowHUD), 505954139U) },
+		{ Z_Construct_UClass_AWindowHUD, AWindowHUD::StaticClass, TEXT("AWindowHUD"), &Z_Registration_Info_UClass_AWindowHUD, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AWindowHUD), 4074827190U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_WindowHUD_h_4036672895(TEXT("/Script/MinesButton"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_WindowHUD_h_2171359390(TEXT("/Script/MinesButton"),
 		Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_WindowHUD_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Unreal_Games_JoinTask_Plugins_MinesButton_Source_MinesButton_Public_WindowHUD_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

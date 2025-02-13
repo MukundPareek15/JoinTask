@@ -5,8 +5,6 @@
 #include "Widgets/Input/SEditableTextBox.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Input/SButton.h"
-//#include "Widgets/Layout/SVerticalBox.h"
-//#include "Widgets/Layout/SHorizontalBox.h"
 #include "HttpModule.h"
 
 void SChatWidget::Construct(const FArguments& InArgs)
@@ -58,54 +56,7 @@ void SChatWidget::OnChatSubmitted(const FText& Text, ETextCommit::Type CommitTyp
 
 void SChatWidget::HandleAIResponse(FString AIResponse)
 {
-	/*UE_LOG(LogTemp, Log, TEXT("Raw AI Response:\n%s"), *AIResponse);
-	// Convert JSON response to structured data
-	TSharedPtr<FJsonObject> JsonObject;
-	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(AIResponse);
-
-	if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
-	{
-		// Extract message content from AI response
-		TArray<TSharedPtr<FJsonValue>> Choices = JsonObject->GetArrayField("choices");
-		if (Choices.Num() > 0 && Choices[0]->AsObject()->HasField("message"))
-		{
-			TSharedPtr<FJsonObject> MessageObject = Choices[0]->AsObject()->GetObjectField("message");
-
-			if (MessageObject->HasField("content"))
-			{
-				FString ResponseTextStr = MessageObject->GetStringField("content");
-				// ✅ Extract Grid Data Only
-				int32 GridStartIndex = ResponseTextStr.Find(TEXT("\n"));
-				if (GridStartIndex != INDEX_NONE)
-				{
-					LastGeneratedGrid = ResponseTextStr.Mid(GridStartIndex).TrimStartAndEnd();
-				}
-				else
-				{
-					LastGeneratedGrid = ResponseTextStr; // Fallback if no newline
-				}
-
-				// ✅ Remove extra AI explanations
-				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("In this grid, \"X\" represents the bomb."), TEXT(""), ESearchCase::IgnoreCase);
-				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("The other cells are empty."), TEXT(""), ESearchCase::IgnoreCase);
-
-				ResponseText->SetText(FText::FromString(LastGeneratedGrid));//(ResponseTextStr));// ✅ Update response text in UI
-				PlayButton->SetEnabled(true);
-			}
-			
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Invalid AI response format: Missing 'message' or 'content'"));
-			ResponseText->SetText(FText::FromString("Error: Invalid AI response format"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to parse AI response: %s"), *AIResponse);
-		ResponseText->SetText(FText::FromString("Error: Invalid AI response"));
-	}*/
-	// ✅ Convert JSON response to structured data
+	
 	UE_LOG(LogTemp, Log, TEXT("Raw AI Response:\n%s"), *AIResponse);
 
 	TSharedPtr<FJsonObject> JsonObject;
@@ -133,13 +84,14 @@ void SChatWidget::HandleAIResponse(FString AIResponse)
 					LastGeneratedGrid = ResponseTextStr; // Fallback if no newline
 				}
 
-				// ✅ Remove extra AI explanations
+				// Remove extra AI explanations
 				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("In this grid, \"X\" represents the bomb."), TEXT(""), ESearchCase::IgnoreCase);
 				LastGeneratedGrid = LastGeneratedGrid.Replace(TEXT("The other cells are empty."), TEXT(""), ESearchCase::IgnoreCase);
 
-				// ✅ Set the cleaned text in the UI
+				// Set the cleaned text in the UI
 				ResponseText->SetText(FText::FromString(LastGeneratedGrid));
 				PlayButton->SetEnabled(true);
+
 			}
 		}
 		else
@@ -175,19 +127,18 @@ FReply SChatWidget::GenerateMinesweeperBoard()
 		SAssignNew(RowBox, SHorizontalBox);
 
 		TArray<FString> Cells;
-		Row.ParseIntoArray(Cells, TEXT(" "), true);// ✅ Split by space (ignores multiple spaces)
+		Row.ParseIntoArray(Cells, TEXT(" "), true);// Split by space (ignores multiple spaces)
 
 		for (const FString& Cell : Cells)
 		{
-			//int32 Value = (Cell == "X") ? -1 : FCString::Atoi(*Cell);
 
-			FString DisplayText = (Cell == "X") ? "X" : Cell; // ✅ Bomb symbol
+			FString DisplayText = (Cell == "X") ? "X" : Cell; // Bomb 
 
 			RowBox->AddSlot()
 				.AutoWidth()
 				[
 					SNew(SButton)
-						.Text(FText::FromString(DisplayText/*(Value == -1 ? "X" : FString::FromInt(Value)*/))
+						.Text(FText::FromString(DisplayText))
 				];
 		}
 
