@@ -1,9 +1,0 @@
-{
-	"SourceFiles": [
-		"D:\\Unreal Games\\JoinTask\\Source\\JoinTask\\JoinTask.Build.cs",
-		"D:\\Unreal Games\\JoinTask\\Plugins\\MinesButton\\Source\\MinesButton\\MinesButton.Build.cs",
-		"D:\\Unreal Games\\JoinTask\\Source\\JoinTask.Target.cs",
-		"D:\\Unreal Games\\JoinTask\\Source\\JoinTaskEditor.Target.cs"
-	],
-	"EngineVersion": "5.3.2"
-}
